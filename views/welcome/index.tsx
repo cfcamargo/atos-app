@@ -6,11 +6,7 @@ import { MapPin, Flag, Users, Star } from 'lucide-react-native';
 import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
-type PublicStackParamList = {
-  Login: undefined;
-  Welcome: undefined;
-};
+import { PublicStackParamList } from '@/models/routes';
 
 export default function Welcome() {
   const navigation = useNavigation<NativeStackNavigationProp<PublicStackParamList>>();
@@ -67,7 +63,7 @@ export default function Welcome() {
                 size="xl" 
                 variant="solid" 
                 className="bg-atosAmber rounded-3xl"
-                onPress={() => console.log('Ajuda')}
+                onPress={() => navigation.navigate('Help')}
             >
                 <ButtonText className="text-atosDark font-bold text-lg">Preciso de Ajuda</ButtonText>
             </Button>
