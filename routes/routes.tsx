@@ -6,9 +6,10 @@ import { PrivateRoutes } from './private-routes';
 import { Session } from '@supabase/supabase-js';
 import { Box } from '@/components/ui/box';
 import { Spinner } from '@/components/ui/spinner';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Routes() {
-  const [session, setSession] = useState<Session | null>(null);
+  const [session, setSession] = useState<any>(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
@@ -32,6 +33,7 @@ export default function Routes() {
 
     return () => subscription.unsubscribe();
   }, []);
+
 
   if (!isInitialized) {
     return (
