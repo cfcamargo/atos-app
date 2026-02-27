@@ -95,7 +95,7 @@ export default function Waiting() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-atosDark">
+    <SafeAreaView className="flex-1 bg-atosDark dark:bg-[#0F172A]">
       {/* Header */}
       <Box className="px-5 py-4">
         <TouchableOpacity

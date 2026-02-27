@@ -1,22 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { supabase } from '../utils/supabase'; 
-import { PublicRoutes } from './public-routes';
-import { PrivateRoutes } from './private-routes';
-import { Session } from '@supabase/supabase-js';
-import { Box } from '@/components/ui/box';
-import { Spinner } from '@/components/ui/spinner';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { supabase } from "../utils/supabase";
+import { PublicRoutes } from "./public-routes";
+import { PrivateRoutes } from "./private-routes";
+import { OnboardingRoutes } from "./onboarding-routes";
+import { Session } from "@supabase/supabase-js";
+import { Box } from "@/components/ui/box";
+import { Spinner } from "@/components/ui/spinner";
+import * as Linking from "expo-linking";
+
+const prefix = Linking.createURL("/");
+
+const linking = {
+  prefixes: [prefix, "atosapp://"],
+  config: {
+    screens: {
+      // Configuramos para capturar as rotas padrão se necessário
+    },
+  },
+};
 
 export default function Routes() {
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isNewUser, setIsNewUser] = useState(false);
 
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
         setSession(session);
+        if (session) {
+          const profileCompleted =
+            session.user.user_metadata?.profile_completed;
+          setIsNewUser(profileCompleted !== true);
+        }
       } catch (error) {
         console.error(error);
       } finally {
@@ -26,14 +46,21 @@ export default function Routes() {
 
     initializeAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
-      setIsInitialized(true); 
+      if (session) {
+        const profileCompleted = session.user.user_metadata?.profile_completed;
+        setIsNewUser(profileCompleted !== true);
+      } else {
+        setIsNewUser(false);
+      }
+      setIsInitialized(true);
     });
 
     return () => subscription.unsubscribe();
   }, []);
-
 
   if (!isInitialized) {
     return (
@@ -44,8 +71,14 @@ export default function Routes() {
   }
 
   return (
-    <NavigationContainer>
-      {session ? <PrivateRoutes /> : <PublicRoutes />}
+    <NavigationContainer linking={linking}>
+      {!session ? (
+        <PublicRoutes />
+      ) : isNewUser ? (
+        <OnboardingRoutes />
+      ) : (
+        <PrivateRoutes />
+      )}
     </NavigationContainer>
   );
 }

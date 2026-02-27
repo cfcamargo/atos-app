@@ -36,6 +36,7 @@ import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Center } from "@/components/ui/center";
 import { Spinner } from "@/components/ui/spinner";
+import { useColorScheme } from "nativewind";
 
 const helpSchema = z.object({
   name: z.string().optional(),
@@ -48,6 +49,8 @@ export default function Help() {
   const [loading, setLoading] = useState(false);
   const navigation =
     useNavigation<NativeStackNavigationProp<PublicStackParamList>>();
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === "dark";
 
   const [isChecking, setIsChecking] = useState(true);
 
@@ -133,15 +136,15 @@ export default function Help() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView className="flex-1 bg-[#FBFBFB]">
-        <HStack className="px-5 py-4 items-center border-b border-gray-100">
+      <SafeAreaView className="flex-1 bg-[#FBFBFB] dark:bg-[#0F172A]">
+        <HStack className="px-5 py-4 items-center border-b border-gray-100 dark:border-white/10">
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             className="p-2 -ml-2"
           >
-            <ChevronLeft size={24} color="#181718" />
+            <ChevronLeft size={24} color={isDark ? "#FFFFFF" : "#181718"} />
           </TouchableOpacity>
-          <Heading className="flex-1 text-center mr-8 text-[#181718] text-lg font-bold">
+          <Heading className="flex-1 text-center mr-8 text-[#181718] dark:text-white text-lg font-bold">
             Solicitar Apoio
           </Heading>
         </HStack>
@@ -155,11 +158,11 @@ export default function Help() {
               </Text>
             </HStack>
 
-            <Heading className="text-[#181718] text-3xl font-extrablack mt-2">
+            <Heading className="text-[#181718] dark:text-white text-3xl font-extrablack mt-2">
               Estamos aqui para ouvir você
             </Heading>
 
-            <Text className="text-gray-500 text-base leading-relaxed mt-2">
+            <Text className="text-gray-500 dark:text-gray-400 text-base leading-relaxed mt-2">
               Este é um espaço livre de julgamentos. Compartilhe o que está
               sentindo e um de nossos conselheiros orará por você.
             </Text>
@@ -167,7 +170,7 @@ export default function Help() {
 
           <VStack space="lg" className="flex-1">
             <Box
-              className={`bg-white rounded-3xl p-5 border shadow-sm ${errors.name ? "border-red-500" : "border-gray-100"}`}
+              className={`bg-white dark:bg-white/5 rounded-3xl p-5 border shadow-sm ${errors.name ? "border-red-500" : "border-gray-100 dark:border-white/10"}`}
             >
               <Text className="text-gray-400 font-bold text-xs tracking-widest mb-3">
                 COMO QUER SER CHAMADO?
@@ -190,7 +193,7 @@ export default function Help() {
                     >
                       <InputField
                         placeholder="Ex: Batman (Opcional)"
-                        className="text-lg text-gray-700 placeholder:text-gray-300 p-0"
+                        className="text-lg text-gray-700 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-500 p-0"
                         value={value}
                         onChangeText={onChange}
                         onBlur={onBlur}
@@ -208,7 +211,7 @@ export default function Help() {
             </Box>
 
             <Box
-              className={`bg-white rounded-3xl p-5 border shadow-sm flex-1 mb-2 ${errors.message ? "border-red-500" : "border-gray-100"}`}
+              className={`bg-white dark:bg-white/5 rounded-3xl p-5 border shadow-sm flex-1 mb-2 ${errors.message ? "border-red-500" : "border-gray-100 dark:border-white/10"}`}
             >
               <Text className="text-gray-400 font-bold text-xs tracking-widest mb-3">
                 COMO ESTA SE SENTINDO? *
@@ -231,13 +234,12 @@ export default function Help() {
                     >
                       <TextareaInput
                         placeholder="Escreva aqui o que está sentindo, o que tem te afligido..."
-                        className="text-lg p-0 leading-relaxed min-h-[150px]"
+                        className="text-lg p-0 leading-relaxed min-h-[150px] text-gray-700 dark:text-white"
                         textAlignVertical="top"
                         multiline={true}
                         value={value}
                         onChangeText={onChange}
                         onBlur={onBlur}
-                        style={{ color: "#374151" }}
                         placeholderTextColor="#9CA3AF"
                         returnKeyType="done"
                         blurOnSubmit={true}
@@ -257,8 +259,8 @@ export default function Help() {
 
           <VStack space="md" className="mt-4 pt-2">
             <HStack className="justify-center items-center opacity-50 mb-1">
-              <Lock size={12} color="#181718" />
-              <Text className="text-xs text-center ml-1 italic text-[#181718]">
+              <Lock size={12} color={isDark ? "#9CA3AF" : "#181718"} />
+              <Text className="text-xs text-center ml-1 italic text-[#181718] dark:text-gray-400">
                 Sua conversa é 100% privada e segura
               </Text>
             </HStack>
